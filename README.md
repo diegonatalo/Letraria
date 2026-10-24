@@ -27,6 +27,7 @@ Arte ASCII colorida e animada: pinturas que se revelam com zoom, formas que se d
 |---|---|
 | **Galeria** | A página inicial reúne as obras em cartões. Clique em um para abrir a animação em tela cheia. |
 | **Seis obras clássicas** | *A Noite Estrelada*, *Os Girassóis*, *O Beijo*, *A Grande Onda de Kanagawa*, *Moça com Brinco de Pérola* e *O Grito* viram texto colorido, com moldura dourada também em ASCII. O zoom começa no centro e se afasta até mostrar a obra inteira. |
+| **Sobre a obra** | Quando o zoom termina, o botão "Sobre a obra" abre um painel com três partes: o contexto em que a obra foi feita, a mensagem que ela passa e uma curiosidade. Fecha com o ✕, clicando fora ou com Esc. O painel traz também o link do arquivo de origem na Wikimedia Commons. |
 | **Coração de palavras** | Um contorno de coração se desenha de baixo para cima e depois se preenche com "TE AMO", "CARINHO", "ABRAÇO" e outras palavras, em tons de vermelho. |
 | **Repetir a animação** | Clique na tela ou no botão "Repetir" para rever o zoom ou o desenho do coração. |
 | **Movimento reduzido** | Se o seu sistema pede menos animação, as obras aparecem já prontas, sem zoom nem desenho progressivo. |
@@ -75,7 +76,7 @@ components/
 ├── AsciiArtwork.tsx        renderizador de qualquer pintura, com zoom e moldura
 └── AsciiHeart.tsx          contorno e preenchimento do coração
 lib/
-└── works.ts                lista das obras (título, artista, ano, fonte)
+└── works.ts                lista das obras (título, artista, ano, fonte e textos do painel "Sobre a obra")
 public/obras/               imagens reduzidas e miniaturas das obras
 docs/img/
 └── banner.png              banner deste README
@@ -86,9 +87,9 @@ docs/img/
 
 1. Baixe uma versão reduzida (de 1280 a 1920 px de largura) de uma obra em domínio público, por exemplo na [Wikimedia Commons](https://commons.wikimedia.org), e uma miniatura de 480 px.
 2. Salve as duas em `public/obras/<slug>.jpg` e `public/obras/<slug>-thumb.jpg`.
-3. Adicione a obra à lista `WORKS` em `lib/works.ts`.
+3. Adicione a obra à lista `WORKS` em `lib/works.ts`, com `about` contendo três textos, nesta ordem: contexto, mensagem e curiosidade. Confira os fatos em fontes confiáveis antes de escrever.
 
-A página, a galeria, os metadados e o sitemap saem dessa lista.
+A página, a galeria, o painel "Sobre a obra", os metadados e o sitemap saem dessa lista.
 
 </details>
 
