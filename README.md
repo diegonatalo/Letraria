@@ -44,7 +44,7 @@ Arte ASCII colorida e animada: pinturas que se revelam com zoom, formas que se d
 | **Moldura** | Quatro anéis de caracteres dourados (`#@`, `~o`, `=-`, `'.`), mais claros no canto superior esquerdo e mais escuros no inferior direito. |
 | **Coração** | A forma vem da equação clássica do coração. As células de borda formam o contorno e o interior recebe as palavras, embaralhadas e deslocadas linha a linha. |
 
-Tudo é desenhado com `<canvas>` 2D, sem biblioteca de gráficos.
+A pintura é desenhada na GPU com WebGL2 puro (`lib/glArt.ts`), o que mantém o zoom fluido; a moldura dourada e as miniaturas usam `<canvas>` 2D. Se o navegador não tiver WebGL2, o desenho cai para o canvas 2D, mais pesado. Não há biblioteca de gráficos.
 
 ## 🚀 Rodando localmente
 
@@ -84,6 +84,7 @@ components/
 └── BackLink.tsx            botão "← Galeria"
 lib/
 ├── ascii.ts                escala de caracteres e fonte compartilhadas
+├── glArt.ts                renderizador WebGL2 da pintura (shader + atlas de glifos)
 └── works.ts                lista das obras (título, artista, ano, fonte e textos do painel "Sobre a obra")
 public/obras/               imagens reduzidas e miniaturas das obras
 docs/img/
@@ -112,7 +113,7 @@ O projeto foi pensado para a [Vercel](https://vercel.com) e não precisa de conf
 
 - [ ] Mais obras e formas na galeria.
 - [ ] Gerar um `favicon.ico` para leitores antigos (hoje só existe o SVG).
-- [ ] Testar o desempenho em celulares mais simples. A animação redesenha milhares de células por quadro.
+- [ ] Testar o desempenho em celulares mais simples (o zoom agora roda na GPU, mas só foi medido em um computador).
 - [ ] Testes automatizados. Hoje não há nenhum.
 
 ## Créditos

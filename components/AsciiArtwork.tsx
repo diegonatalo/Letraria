@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FONT, RAMP, clamp } from "@/lib/ascii";
+import { createGlArt } from "@/lib/glArt";
 
 const MAX_ROWS = 130; // limita a grade em obras verticais
 
@@ -43,7 +44,8 @@ export default function AsciiArtwork({ src, thumb, nav, title, credit, about, so
   const dimsRef = useRef({ w: 1, h: 1 });
   const boxRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const pixelsRef = useRef<Uint8ClampedArray | null>(null);
+  const glCanvasRef = useRef<HTMLCanvasElement>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null);
   const startRef = useRef(0);
   const [ready, setReady] = useState(false);
   const [done, setDone] = useState(false);
@@ -73,19 +75,12 @@ export default function AsciiArtwork({ src, thumb, nav, title, credit, about, so
     op.catch(() => {}); // o navegador pode recusar (ex.: janelas embutidas)
   }, []);
 
-  // Carrega a pintura e lê seus pixels uma vez.
+  // Carrega a pintura uma vez.
   useEffect(() => {
     const img = new Image();
     img.onload = () => {
-      const c = document.createElement("canvas");
-      const SRC_W = img.naturalWidth;
-      const SRC_H = img.naturalHeight;
-      dimsRef.current = { w: SRC_W, h: SRC_H };
-      c.width = SRC_W;
-      c.height = SRC_H;
-      const cx = c.getContext("2d", { willReadFrequently: true })!;
-      cx.drawImage(img, 0, 0, SRC_W, SRC_H);
-      pixelsRef.current = cx.getImageData(0, 0, SRC_W, SRC_H).data;
+      imgRef.current = img;
+      dimsRef.current = { w: img.naturalWidth, h: img.naturalHeight };
       startRef.current = performance.now();
       setReady(true);
     };
@@ -97,7 +92,18 @@ export default function AsciiArtwork({ src, thumb, nav, title, credit, about, so
     const box = boxRef.current!;
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
-    const pixels = pixelsRef.current!;
+    const img = imgRef.current!;
+    // Na GPU (WebGL2) a pintura flui a 60 fps; sem WebGL2 o desenho cai para o canvas 2D, bem mais pesado.
+    const art = createGlArt(glCanvasRef.current!, img);
+    let pixels = new Uint8ClampedArray(0);
+    if (!art) {
+      const c = document.createElement("canvas");
+      c.width = img.naturalWidth;
+      c.height = img.naturalHeight;
+      const cx2 = c.getContext("2d", { willReadFrequently: true })!;
+      cx2.drawImage(img, 0, 0);
+      pixels = cx2.getImageData(0, 0, c.width, c.height).data;
+    }
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const { w: SRC_W, h: SRC_H } = dimsRef.current;
     const aspect = SRC_W / SRC_H;
@@ -114,6 +120,8 @@ export default function AsciiArtwork({ src, thumb, nav, title, credit, about, so
     let totalCols = 0;
     let totalRows = 0;
     let dpr = 1;
+    let overlayDirty = true;
+    let tick = 0;
     const colorCache = new Map<number, string>();
     const bgCache = new Map<number, string>();
 
@@ -139,6 +147,8 @@ export default function AsciiArtwork({ src, thumb, nav, title, credit, about, so
       frameY = (H - totalRows * ch) / 2;
       offX = frameX + FRAME_X * cw;
       offY = frameY + FRAME_Y * ch;
+      overlayDirty = true;
+      art?.layout({ width: W, height: H, dpr, originX: offX, originY: offY, cw, ch, cols, rows, fontPx });
     };
     layout();
     const ro = new ResizeObserver(layout);
@@ -219,10 +229,23 @@ export default function AsciiArtwork({ src, thumb, nav, title, credit, about, so
       const cy = 0.5;
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.fillStyle = "#02040a";
-      ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
       ctx.font = `bold ${fontPx}px ${FONT}`;
       ctx.textBaseline = "top";
+
+      if (art) {
+        art.draw({ t, z, alpha });
+        // A moldura é pequena e muda devagar: depois da introdução basta redesenhá-la a cada 3 quadros.
+        if (overlayDirty || t < INTRO + 0.2 || ++tick % 3 === 0) {
+          overlayDirty = false;
+          ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+          drawFrame(t, ip);
+        }
+        raf = requestAnimationFrame(frame);
+        return;
+      }
+
+      ctx.fillStyle = "#02040a";
+      ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
 
       const sub = z > 4 ? 1 : 2; // subamostras por eixo (antialiasing quando afastado)
       const n = RAMP.length;
@@ -281,6 +304,7 @@ export default function AsciiArtwork({ src, thumb, nav, title, credit, about, so
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      art?.dispose();
     };
   }, [ready]);
 
@@ -289,7 +313,8 @@ export default function AsciiArtwork({ src, thumb, nav, title, credit, about, so
   return (
     <div className="relative flex h-full w-full flex-col">
       <div ref={boxRef} className="relative min-h-0 flex-1" onClick={replay}>
-        <canvas ref={canvasRef} className="block" aria-label={`${title} em arte ASCII animada`} role="img" />
+        <canvas ref={glCanvasRef} aria-hidden className="absolute left-0 top-0" />
+        <canvas ref={canvasRef} className="absolute left-0 top-0" aria-label={`${title} em arte ASCII animada`} role="img" />
         {!ready && (
           <p className="absolute inset-0 grid place-items-center font-mono text-sm text-slate-400">carregando a pintura…</p>
         )}
