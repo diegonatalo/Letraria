@@ -38,6 +38,8 @@ export default async function ObraPage({ params }: { params: Promise<{ slug: str
         src={workImage(work)}
         title={work.title}
         credit={`${work.artist}, ${work.year}`}
+        about={work.about}
+        source={work.source}
       />
     </main>
   );

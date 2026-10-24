@@ -21,9 +21,13 @@ type Props = {
   title: string;
   /** Linha de crédito exibida ao final, ex.: "Vincent van Gogh, 1889". */
   credit: string;
+  /** Texto "Sobre a obra": um parágrafo por item. */
+  about?: string[];
+  /** Link do arquivo de origem da imagem. */
+  source?: string;
 };
 
-export default function AsciiArtwork({ src, title, credit }: Props) {
+export default function AsciiArtwork({ src, title, credit, about, source }: Props) {
   const dimsRef = useRef({ w: 1, h: 1 });
   const boxRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -31,6 +35,14 @@ export default function AsciiArtwork({ src, title, credit }: Props) {
   const startRef = useRef(0);
   const [ready, setReady] = useState(false);
   const [done, setDone] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
+
+  useEffect(() => {
+    if (!aboutOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setAboutOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [aboutOpen]);
 
   const replay = useCallback(() => {
     startRef.current = performance.now();
@@ -247,18 +259,73 @@ export default function AsciiArtwork({ src, title, credit }: Props) {
         {!ready && <p className="absolute inset-0 grid place-items-center text-sm text-slate-400">carregando a pintura…</p>}
       </div>
       <footer
-        className={`flex items-center justify-between gap-4 px-6 py-3 text-sm text-slate-300 transition-opacity duration-1000 ${done ? "opacity-100" : "opacity-0"}`}
+        className={`flex items-center justify-between gap-4 px-6 py-3 text-sm text-slate-300 transition-opacity duration-1000 ${done ? "opacity-100" : "pointer-events-none opacity-0"}`}
       >
         <span>
           <strong className="font-semibold text-amber-200">{title}</strong> · {credit}
         </span>
-        <button
-          onClick={replay}
-          className="rounded-full border border-slate-600 px-4 py-1 text-slate-200 transition hover:border-amber-200 hover:text-amber-200"
-        >
-          ↻ Repetir zoom
-        </button>
+        <span className="flex gap-2">
+          {about && (
+            <button
+              onClick={() => setAboutOpen(true)}
+              className="rounded-full border border-amber-200/60 px-4 py-1 text-amber-100 transition hover:bg-amber-200/10"
+            >
+              Sobre a obra
+            </button>
+          )}
+          <button
+            onClick={replay}
+            className="rounded-full border border-slate-600 px-4 py-1 text-slate-200 transition hover:border-amber-200 hover:text-amber-200"
+          >
+            ↻ Repetir zoom
+          </button>
+        </span>
       </footer>
+
+      {about && aboutOpen && (
+        <div className="absolute inset-0 z-20 flex justify-end bg-black/60" onClick={() => setAboutOpen(false)}>
+          <aside
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Sobre ${title}`}
+            onClick={(e) => e.stopPropagation()}
+            className="h-full w-full max-w-md overflow-y-auto border-l border-slate-800 bg-slate-950 p-6 text-slate-300 shadow-2xl"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-semibold text-amber-100">{title}</h2>
+                <p className="mt-1 text-sm text-slate-500">{credit}</p>
+              </div>
+              <button
+                onClick={() => setAboutOpen(false)}
+                aria-label="Fechar"
+                className="rounded-full border border-slate-700 px-3 py-1 text-slate-300 transition hover:border-amber-200 hover:text-amber-200"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="mt-6 space-y-5 text-[15px] leading-relaxed">
+              {about.map((text, i) => (
+                <section key={i}>
+                  <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-amber-200/80">
+                    {["O contexto", "A mensagem", "Curiosidade"][i] ?? "Mais"}
+                  </h3>
+                  <p>{text}</p>
+                </section>
+              ))}
+            </div>
+            {source && (
+              <p className="mt-8 text-xs text-slate-500">
+                Imagem em domínio público,{" "}
+                <a href={source} target="_blank" rel="noreferrer" className="underline hover:text-amber-200">
+                  arquivo na Wikimedia Commons
+                </a>
+                .
+              </p>
+            )}
+          </aside>
+        </div>
+      )}
     </div>
   );
 }
