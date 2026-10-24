@@ -1,9 +1,135 @@
 @import "tailwindcss";
 
+/* Identidade: dourado da moldura, azul-noite de A Noite Estrelada, rubi do coração. */
+@theme inline {
+  --color-night: #02040a;
+  --color-night-2: #070b18;
+  --color-gold: #f5c76a;
+  --color-gold-light: #fde9b0;
+  --color-gold-dark: #b9822a;
+  --color-ruby: #e11d48;
+  --font-display: var(--nf-display), ui-serif, Georgia, serif;
+  --font-mono: var(--nf-mono), ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
 html,
 body {
   height: 100%;
   margin: 0;
-  background: #02040a;
+  background: var(--color-night);
   color: #e2e8f0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: rgb(245 199 106 / 0.3);
+}
+
+/* Ouro que brilha devagar (logotipo e destaques). */
+.gold-text {
+  background: linear-gradient(100deg, #b9822a 0%, #fde9b0 30%, #f5c76a 50%, #fde9b0 70%, #b9822a 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gold-shine 7s linear infinite;
+}
+
+@keyframes gold-shine {
+  from {
+    background-position: 220% 0;
+  }
+  to {
+    background-position: -220% 0;
+  }
+}
+
+/* Transição entre páginas. */
+.page-fade {
+  animation: page-fade 0.5s ease-out both;
+}
+
+@keyframes page-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Painel "Sobre a obra": gaveta lateral no desktop, folha que sobe no celular. */
+.sheet {
+  animation: sheet-x 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.sheet-backdrop {
+  animation: page-fade 0.25s ease-out both;
+}
+
+@keyframes sheet-x {
+  from {
+    transform: translateX(32px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes sheet-y {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@media (max-width: 639px) {
+  .sheet {
+    animation-name: sheet-y;
+  }
+}
+
+/* Coração do cartão da galeria: dois pulsos curtos por ciclo. */
+.heartbeat {
+  animation: heartbeat 2.4s ease-in-out infinite;
+  transform-origin: 50% 55%;
+}
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  8% {
+    transform: scale(1.06);
+  }
+  16% {
+    transform: scale(1);
+  }
+  26% {
+    transform: scale(1.04);
+  }
+  36% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

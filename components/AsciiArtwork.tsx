@@ -1,23 +1,35 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { FONT, RAMP, clamp } from "@/lib/ascii";
 
 const MAX_ROWS = 130; // limita a grade em obras verticais
 
-const RAMP = ".,:;-=+*xo#%&@";
 const ZOOM_START = 16;
-const DELAY = 0.8; // segundos parado no zoom máximo
+const INTRO = 1.8; // segundos: a moldura se desenha e a pintura surge
+const DELAY = 0.6; // segundos parado no zoom máximo, depois da introdução
 const DURATION = 11; // segundos até a obra completa
 const FRAME_X = 5; // espessura da moldura em células (as células são ~0,6x mais estreitas que altas)
 const FRAME_Y = 3;
-const FONT = 'Consolas, "Cascadia Mono", "Courier New", monospace';
 
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
+
+type Neighbor = { href: string; title: string };
+
+const SECTIONS = ["O contexto", "A mensagem", "Curiosidade"];
+
+const ICON = "h-4 w-4 fill-none stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]";
+const ROUND_BTN =
+  "inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-700 text-slate-300 transition hover:border-gold hover:text-gold";
 
 type Props = {
   /** Imagem de origem (caminho em /public). */
   src: string;
+  /** Miniatura, usada no topo do painel "Sobre a obra". */
+  thumb?: string;
+  /** Obra anterior e próxima, para percorrer a coleção. */
+  nav?: { prev: Neighbor; next: Neighbor };
   title: string;
   /** Linha de crédito exibida ao final, ex.: "Vincent van Gogh, 1889". */
   credit: string;
@@ -27,7 +39,7 @@ type Props = {
   source?: string;
 };
 
-export default function AsciiArtwork({ src, title, credit, about, source }: Props) {
+export default function AsciiArtwork({ src, thumb, nav, title, credit, about, source }: Props) {
   const dimsRef = useRef({ w: 1, h: 1 });
   const boxRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -36,17 +48,25 @@ export default function AsciiArtwork({ src, title, credit, about, source }: Prop
   const [ready, setReady] = useState(false);
   const [done, setDone] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!aboutOpen) return;
+    closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setAboutOpen(false);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [aboutOpen]);
 
+  // Repetir pula a introdução: a moldura já está pronta, só o zoom recomeça.
   const replay = useCallback(() => {
-    startRef.current = performance.now();
+    startRef.current = performance.now() - INTRO * 1000;
     setDone(false);
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else document.documentElement.requestFullscreen?.();
   }, []);
 
   // Carrega a pintura e lê seus pixels uma vez.
@@ -130,13 +150,17 @@ export default function AsciiArtwork({ src, title, credit, about, source }: Prop
     };
 
     // Moldura dourada: anéis concêntricos com chanfro (claro em cima/esquerda, escuro embaixo/direita).
-    const drawFrame = (t: number) => {
+    const drawFrame = (t: number, ip: number) => {
       ctx.textBaseline = "top";
       for (let j = 0; j < totalRows; j++) {
         const dy = Math.min(j, totalRows - 1 - j);
         for (let i = 0; i < totalCols; i++) {
           const dx = Math.min(i, totalCols - 1 - i);
           if (dx >= FRAME_X && dy >= FRAME_Y) continue;
+          // Na introdução a moldura se desenha em diagonal, do canto superior esquerdo, com uma "caneta" brilhante.
+          const key = (i / totalCols + j / totalRows) / 2;
+          if (key > ip) continue;
+          const pen = ip < 1 ? clamp(1 - (ip - key) * 14, 0, 1) : 0;
           const d = Math.min(dx * 0.6, dy); // distância física até a borda externa
           const corner = dx < FRAME_X && dy < FRAME_Y;
           const lit = i + j < (totalCols + totalRows) / 2 ? 1 : 0.55; // luz vinda do canto superior esquerdo
@@ -156,7 +180,7 @@ export default function AsciiArtwork({ src, title, credit, about, source }: Prop
             tone = 0.6;
           }
           const shine = 0.85 + 0.15 * Math.sin(t * 1.6 + (i + j) * 0.25);
-          const f = tone * lit * shine;
+          const f = tone * lit * shine * (1 + pen * 0.9);
           const r = clamp(255 * f, 0, 255) | 0;
           const g = clamp(200 * f, 0, 255) | 0;
           const b = clamp(70 * f, 0, 255) | 0;
@@ -176,7 +200,9 @@ export default function AsciiArtwork({ src, title, credit, about, source }: Prop
 
     const frame = (now: number) => {
       const t = (now - startRef.current) / 1000;
-      const p = reduced ? 1 : clamp((t - DELAY) / DURATION, 0, 1);
+      const p = reduced ? 1 : clamp((t - INTRO - DELAY) / DURATION, 0, 1);
+      const ip = reduced ? 1 : clamp(t / (INTRO * 0.8), 0, 1) * 1.1; // progresso da moldura (passa de 1 para fechar os cantos)
+      const alpha = reduced ? 1 : clamp((t - INTRO * 0.6) / 0.9, 0, 1); // a pintura surge de dentro da moldura
       if (p >= 1 && !finished) {
         finished = true;
         setDone(true);
@@ -196,7 +222,8 @@ export default function AsciiArtwork({ src, title, credit, about, source }: Prop
 
       const sub = z > 4 ? 1 : 2; // subamostras por eixo (antialiasing quando afastado)
       const n = RAMP.length;
-      for (let j = 0; j < rows; j++) {
+      ctx.globalAlpha = alpha;
+      for (let j = 0; alpha > 0 && j < rows; j++) {
         for (let i = 0; i < cols; i++) {
           const nu = (i + 0.5) / cols - 0.5;
           const nv = (j + 0.5) / rows - 0.5;
@@ -242,7 +269,8 @@ export default function AsciiArtwork({ src, title, credit, about, source }: Prop
           ctx.fillText(RAMP[idx], offX + i * cw, offY + j * ch);
         }
       }
-      drawFrame(t);
+      ctx.globalAlpha = 1;
+      drawFrame(t, ip);
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
@@ -252,77 +280,115 @@ export default function AsciiArtwork({ src, title, credit, about, source }: Prop
     };
   }, [ready]);
 
+
+
   return (
     <div className="relative flex h-full w-full flex-col">
       <div ref={boxRef} className="relative min-h-0 flex-1" onClick={replay}>
         <canvas ref={canvasRef} className="block" aria-label={`${title} em arte ASCII animada`} role="img" />
-        {!ready && <p className="absolute inset-0 grid place-items-center text-sm text-slate-400">carregando a pintura…</p>}
+        {!ready && (
+          <p className="absolute inset-0 grid place-items-center font-mono text-sm text-slate-400">carregando a pintura…</p>
+        )}
       </div>
       <footer
-        className={`flex items-center justify-between gap-4 px-6 py-3 text-sm text-slate-300 transition-opacity duration-1000 ${done ? "opacity-100" : "pointer-events-none opacity-0"}`}
+        className={`flex flex-col gap-3 px-4 pb-4 pt-2 transition-opacity duration-1000 sm:flex-row sm:items-center sm:justify-between sm:px-6 ${done ? "opacity-100" : "pointer-events-none opacity-0"}`}
       >
-        <span>
-          <strong className="font-semibold text-amber-200">{title}</strong> · {credit}
-        </span>
-        <span className="flex gap-2">
+        <div className="min-w-0">
+          <h1 className="font-display text-xl leading-tight text-gold-light sm:text-2xl">{title}</h1>
+          <p className="font-mono text-xs text-slate-400">{credit}</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {nav && (
+            <>
+              <Link href={nav.prev.href} aria-label={`Obra anterior: ${nav.prev.title}`} title={nav.prev.title} className={ROUND_BTN}>
+                <svg viewBox="0 0 24 24" className={ICON} aria-hidden>
+                  <path d="M15 5l-7 7 7 7" />
+                </svg>
+              </Link>
+              <Link href={nav.next.href} aria-label={`Próxima obra: ${nav.next.title}`} title={nav.next.title} className={ROUND_BTN}>
+                <svg viewBox="0 0 24 24" className={ICON} aria-hidden>
+                  <path d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </>
+          )}
           {about && (
             <button
               onClick={() => setAboutOpen(true)}
-              className="rounded-full border border-amber-200/60 px-4 py-1 text-amber-100 transition hover:bg-amber-200/10"
+              className="inline-flex h-9 items-center gap-2 rounded-full border border-gold/60 bg-gold/10 px-4 font-mono text-xs text-gold-light transition hover:bg-gold/20"
             >
-              Sobre a obra
+              <span aria-hidden>✦</span> Sobre a obra
             </button>
           )}
-          <button
-            onClick={replay}
-            className="rounded-full border border-slate-600 px-4 py-1 text-slate-200 transition hover:border-amber-200 hover:text-amber-200"
-          >
-            ↻ Repetir zoom
+          <button onClick={replay} aria-label="Repetir o zoom" title="Repetir o zoom" className={ROUND_BTN}>
+            <svg viewBox="0 0 24 24" className={ICON} aria-hidden>
+              <path d="M3 12a9 9 0 1 0 3-6.7" />
+              <path d="M3 4v5h5" />
+            </svg>
           </button>
-        </span>
+          <button onClick={toggleFullscreen} aria-label="Tela cheia" title="Tela cheia" className={ROUND_BTN}>
+            <svg viewBox="0 0 24 24" className={ICON} aria-hidden>
+              <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+            </svg>
+          </button>
+        </div>
       </footer>
 
       {about && aboutOpen && (
-        <div className="absolute inset-0 z-20 flex justify-end bg-black/60" onClick={() => setAboutOpen(false)}>
+        <div
+          className="sheet-backdrop absolute inset-0 z-20 flex justify-end bg-black/70 backdrop-blur-[2px] max-sm:items-end"
+          onClick={() => setAboutOpen(false)}
+        >
           <aside
             role="dialog"
             aria-modal="true"
             aria-label={`Sobre ${title}`}
             onClick={(e) => e.stopPropagation()}
-            className="h-full w-full max-w-md overflow-y-auto border-l border-slate-800 bg-slate-950 p-6 text-slate-300 shadow-2xl"
+            className="sheet overflow-y-auto border-gold/20 bg-night-2 text-slate-300 shadow-2xl max-sm:max-h-[88%] max-sm:w-full max-sm:rounded-t-2xl max-sm:border-t sm:h-full sm:w-full sm:max-w-md sm:border-l"
           >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-semibold text-amber-100">{title}</h2>
-                <p className="mt-1 text-sm text-slate-500">{credit}</p>
+            {thumb && (
+              <div className="relative h-36 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={thumb} alt="" className="h-full w-full object-cover opacity-60" />
+                <div className="absolute inset-0 bg-gradient-to-t from-night-2 via-night-2/40 to-transparent" />
               </div>
-              <button
-                onClick={() => setAboutOpen(false)}
-                aria-label="Fechar"
-                className="rounded-full border border-slate-700 px-3 py-1 text-slate-300 transition hover:border-amber-200 hover:text-amber-200"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="mt-6 space-y-5 text-[15px] leading-relaxed">
-              {about.map((text, i) => (
-                <section key={i}>
-                  <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-amber-200/80">
-                    {["O contexto", "A mensagem", "Curiosidade"][i] ?? "Mais"}
-                  </h3>
-                  <p>{text}</p>
-                </section>
-              ))}
-            </div>
-            {source && (
-              <p className="mt-8 text-xs text-slate-500">
-                Imagem em domínio público,{" "}
-                <a href={source} target="_blank" rel="noreferrer" className="underline hover:text-amber-200">
-                  arquivo na Wikimedia Commons
-                </a>
-                .
-              </p>
             )}
+            <div className={`px-6 pb-8 ${thumb ? "-mt-14 relative" : "pt-6"}`}>
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="font-display text-2xl leading-tight text-gold-light">{title}</h2>
+                  <p className="mt-1 font-mono text-xs text-slate-400">{credit}</p>
+                </div>
+                <button ref={closeRef} onClick={() => setAboutOpen(false)} aria-label="Fechar" className={ROUND_BTN}>
+                  <svg viewBox="0 0 24 24" className={ICON} aria-hidden>
+                    <path d="M6 6l12 12M18 6L6 18" />
+                  </svg>
+                </button>
+              </div>
+              <p aria-hidden className="my-5 font-mono text-xs tracking-widest text-gold/50">
+                ──── ✦ ────
+              </p>
+              <div className="space-y-6 text-[15px] leading-relaxed">
+                {about.map((text, i) => (
+                  <section key={i}>
+                    <h3 className="mb-1.5 flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-gold">
+                      <span className="text-gold/50">{String(i + 1).padStart(2, "0")}</span>
+                      {SECTIONS[i] ?? "Mais"}
+                    </h3>
+                    <p>{text}</p>
+                  </section>
+                ))}
+              </div>
+              {source && (
+                <p className="mt-8 text-xs text-slate-400">
+                  Imagem em domínio público,{" "}
+                  <a href={source} target="_blank" rel="noreferrer" className="underline hover:text-gold">
+                    arquivo na Wikimedia Commons
+                  </a>
+                  .
+                </p>
+              )}
+            </div>
           </aside>
         </div>
       )}

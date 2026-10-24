@@ -255,13 +255,17 @@ export default function AsciiHeart() {
         <canvas ref={canvasRef} className="block" aria-label="Um coração desenhado com palavras de amor e carinho" role="img" />
       </div>
       <footer
-        className={`flex items-center justify-center px-6 py-3 text-sm transition-opacity duration-1000 ${done ? "opacity-100" : "opacity-0"}`}
+        className={`flex items-center justify-between gap-4 px-4 py-3 transition-opacity duration-1000 sm:px-6 ${done ? "opacity-100" : "pointer-events-none opacity-0"}`}
       >
+        <div>
+          <h1 className="font-display text-xl leading-tight text-rose-100 sm:text-2xl">Coração</h1>
+          <p className="font-mono text-xs text-rose-200/60">palavras de amor e carinho</p>
+        </div>
         <button
           onClick={replay}
-          className="rounded-full border border-rose-900 px-4 py-1 text-rose-200 transition hover:border-rose-300 hover:text-rose-100"
+          className="inline-flex items-center gap-2 rounded-full border border-rose-900 px-4 py-1.5 font-mono text-xs text-rose-200 transition hover:border-rose-300 hover:text-rose-100"
         >
-          ↻ Repetir
+          <span aria-hidden>↻</span> Repetir
         </button>
       </footer>
     </div>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import BackLink from "@/components/BackLink";
 import AsciiHeart from "@/components/AsciiHeart";
 
 const TITLE = "Coração · Letraria";
@@ -15,9 +15,7 @@ export const metadata = {
 export default function Coracao() {
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-[#07020a]">
-      <Link href="/" className="absolute left-4 top-3 z-10 text-sm text-rose-300/70 transition hover:text-rose-100">
-        ← Galeria
-      </Link>
+      <BackLink tone="rose" />
       <AsciiHeart />
     </main>
   );

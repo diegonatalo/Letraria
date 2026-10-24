@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import AsciiArtwork from "@/components/AsciiArtwork";
-import { WORKS, getWork, workImage } from "@/lib/works";
+import BackLink from "@/components/BackLink";
+import { WORKS, getWork, workImage, workThumb } from "@/lib/works";
 
 export const dynamicParams = false;
 
@@ -28,18 +28,25 @@ export default async function ObraPage({ params }: { params: Promise<{ slug: str
   const work = getWork((await params).slug);
   if (!work) notFound();
 
+  const i = WORKS.findIndex((w) => w.slug === work.slug);
+  const prev = WORKS[(i - 1 + WORKS.length) % WORKS.length];
+  const next = WORKS[(i + 1) % WORKS.length];
+
   return (
     <main className="relative h-screen w-screen overflow-hidden">
-      <Link href="/" className="absolute left-4 top-3 z-10 text-sm text-slate-400 transition hover:text-amber-200">
-        ← Galeria
-      </Link>
+      <BackLink />
       <AsciiArtwork
         key={work.slug}
         src={workImage(work)}
+        thumb={workThumb(work)}
         title={work.title}
         credit={`${work.artist}, ${work.year}`}
         about={work.about}
         source={work.source}
+        nav={{
+          prev: { href: `/${prev.slug}`, title: prev.title },
+          next: { href: `/${next.slug}`, title: next.title },
+        }}
       />
     </main>
   );

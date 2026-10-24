@@ -1,4 +1,7 @@
 import Link from "next/link";
+import AsciiLogo from "@/components/AsciiLogo";
+import AsciiRain from "@/components/AsciiRain";
+import AsciiThumb from "@/components/AsciiThumb";
 import { WORKS, workThumb } from "@/lib/works";
 
 // Miniatura em texto do coração, gerada na hora da renderização.
@@ -19,58 +22,90 @@ const heartPreview = (() => {
 })();
 
 const CARD =
-  "group block overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 transition hover:border-amber-200/60";
+  "group relative flex h-full flex-col overflow-hidden rounded-xl border border-gold/15 bg-night-2/80 transition duration-300 hover:-translate-y-1 hover:border-gold/60 hover:shadow-[0_8px_40px_-12px_rgba(245,199,106,0.35)]";
+
+/** Cantos em ASCII, como uma moldura em miniatura. */
+function Corners({ tone = "text-gold/70" }: { tone?: string }) {
+  const base = `pointer-events-none absolute z-10 font-mono text-[11px] font-bold leading-none ${tone}`;
+  return (
+    <>
+      <span aria-hidden className={`${base} left-1.5 top-1.5`}>
+        +
+      </span>
+      <span aria-hidden className={`${base} right-1.5 top-1.5`}>
+        +
+      </span>
+      <span aria-hidden className={`${base} bottom-1.5 left-1.5`}>
+        +
+      </span>
+      <span aria-hidden className={`${base} bottom-1.5 right-1.5`}>
+        +
+      </span>
+    </>
+  );
+}
 
 export default function Galeria() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-12">
-      <header className="mb-10">
-        <h1 className="font-mono text-4xl font-bold tracking-tight text-amber-100">Letraria</h1>
-        <p className="mt-2 max-w-xl text-slate-400">Obras e formas desenhadas com letras: arte ASCII colorida e animada.</p>
-      </header>
+    <div className="relative min-h-screen overflow-hidden">
+      <AsciiRain className="pointer-events-none absolute inset-x-0 top-0 h-[28rem] w-full opacity-25 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
+      <main className="relative z-10 mx-auto flex max-w-6xl flex-col px-5 py-12 sm:px-6">
+        <header className="mb-14 pt-4">
+          <AsciiLogo />
+          <p className="mt-6 font-display text-2xl text-slate-100 sm:text-3xl">Pinturas escritas com letras.</p>
+          <p className="mt-3 max-w-xl text-slate-400">
+            Obras clássicas e formas desenhadas em arte ASCII colorida e animada. Escolha uma e veja o zoom revelar tudo.
+          </p>
+        </header>
 
-      <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {WORKS.map((w) => (
-          <li key={w.slug}>
-            <Link href={`/${w.slug}`} className={CARD}>
-              <div className="relative aspect-[4/3] overflow-hidden bg-black">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={workThumb(w)}
-                  alt=""
-                  loading="lazy"
-                  className="h-full w-full object-cover opacity-80 transition group-hover:opacity-100"
-                />
+        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {WORKS.map((w) => (
+            <li key={w.slug}>
+              <Link href={`/${w.slug}`} className={CARD}>
+                <div className="relative aspect-[4/3] overflow-hidden bg-black">
+                  <AsciiThumb src={workThumb(w)} />
+                  <Corners />
+                </div>
+                <div className="p-4">
+                  <h2 className="font-display text-lg font-semibold text-slate-100 transition group-hover:text-gold">
+                    {w.title}
+                  </h2>
+                  <p className="font-mono text-xs text-slate-400">
+                    {w.artist}, {w.year}
+                  </p>
+                  <p className="mt-2 text-sm text-slate-400">{w.description}</p>
+                </div>
+              </Link>
+            </li>
+          ))}
+          <li>
+            <Link href="/coracao" className={CARD}>
+              <div className="relative grid aspect-[4/3] place-items-center overflow-hidden bg-[#07020a]">
+                <pre
+                  aria-hidden
+                  className="heartbeat font-mono text-[clamp(6px,1.55vw,12px)] font-bold leading-[1.05] text-rose-500 transition group-hover:text-rose-300"
+                >
+                  {heartPreview}
+                </pre>
+                <Corners tone="text-rose-400/70" />
               </div>
               <div className="p-4">
-                <h2 className="font-semibold text-slate-100 group-hover:text-amber-200">{w.title}</h2>
-                <p className="text-xs text-slate-500">
-                  {w.artist}, {w.year}
+                <h2 className="font-display text-lg font-semibold text-slate-100 transition group-hover:text-gold">
+                  Coração
+                </h2>
+                <p className="font-mono text-xs text-slate-400">palavras de carinho</p>
+                <p className="mt-2 text-sm text-slate-400">
+                  Um contorno que se preenche de baixo para cima com palavras de carinho.
                 </p>
-                <p className="mt-2 text-sm text-slate-400">{w.description}</p>
               </div>
             </Link>
           </li>
-        ))}
-        <li>
-          <Link href="/coracao" className={CARD}>
-            <div className="relative aspect-[4/3] overflow-hidden bg-black">
-              <pre
-                aria-hidden
-                className="grid h-full w-full place-items-center bg-[#07020a] font-mono text-[clamp(6px,1.55vw,12px)] font-bold leading-[1.05] text-rose-500 transition group-hover:text-rose-300"
-              >
-                {heartPreview}
-              </pre>
-            </div>
-            <div className="p-4">
-              <h2 className="font-semibold text-slate-100 group-hover:text-amber-200">Coração</h2>
-              <p className="mt-2 text-sm text-slate-400">
-                Um contorno que se preenche de baixo para cima com palavras de carinho.
-              </p>
-            </div>
-          </Link>
-        </li>
-      </ul>
-    </main>
+        </ul>
+
+        <footer className="mt-16 border-t border-slate-800/80 pt-6 text-center font-mono text-xs text-slate-400">
+          Feito com 💛 e letras · obras em domínio público, via Wikimedia Commons
+        </footer>
+      </main>
+    </div>
   );
 }

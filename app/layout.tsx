@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
+import { Fraunces, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+
+const display = Fraunces({ subsets: ["latin"], variable: "--nf-display", display: "swap" });
+const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--nf-mono", display: "swap" });
 
 const SITE = "https://letraria.vercel.app";
 const DESCRIPTION = "Obras e formas desenhadas com letras: arte ASCII colorida e animada.";
@@ -27,7 +31,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className={`${display.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   );
