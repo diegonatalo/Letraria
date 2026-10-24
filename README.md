@@ -26,7 +26,7 @@ Arte ASCII colorida e animada: pinturas que se revelam com zoom, formas que se d
 | Recurso | Descrição |
 |---|---|
 | **Galeria** | A página inicial reúne as obras em cartões. Clique em um para abrir a animação em tela cheia. |
-| **A Noite Estrelada** | A pintura de Van Gogh vira texto colorido, com moldura dourada também em ASCII. O zoom começa no centro e se afasta até mostrar a obra inteira. |
+| **Seis obras clássicas** | *A Noite Estrelada*, *Os Girassóis*, *O Beijo*, *A Grande Onda de Kanagawa*, *Moça com Brinco de Pérola* e *O Grito* viram texto colorido, com moldura dourada também em ASCII. O zoom começa no centro e se afasta até mostrar a obra inteira. |
 | **Coração de palavras** | Um contorno de coração se desenha de baixo para cima e depois se preenche com "TE AMO", "CARINHO", "ABRAÇO" e outras palavras, em tons de vermelho. |
 | **Repetir a animação** | Clique na tela ou no botão "Repetir" para rever o zoom ou o desenho do coração. |
 | **Movimento reduzido** | Se o seu sistema pede menos animação, as obras aparecem já prontas, sem zoom nem desenho progressivo. |
@@ -64,7 +64,7 @@ npm run dev     # http://localhost:3000
 ```text
 app/
 ├── page.tsx                galeria (página inicial)
-├── noite-estrelada/        página da pintura em ASCII
+├── [slug]/                 uma página por obra (/noite-estrelada, /o-beijo, ...)
 ├── coracao/                página do coração de palavras
 ├── layout.tsx              metadados, Open Graph e Twitter
 ├── opengraph-image.tsx     imagem de compartilhamento (1200×630)
@@ -72,10 +72,11 @@ app/
 ├── robots.ts               /robots.txt
 └── sitemap.ts              /sitemap.xml
 components/
-├── AsciiStarryNight.tsx    renderizador da pintura, com zoom e moldura
+├── AsciiArtwork.tsx        renderizador de qualquer pintura, com zoom e moldura
 └── AsciiHeart.tsx          contorno e preenchimento do coração
-public/
-└── noite-estrelada.jpg     pintura de origem (1920×1520)
+lib/
+└── works.ts                lista das obras (título, artista, ano, fonte)
+public/obras/               imagens reduzidas e miniaturas das obras
 docs/img/
 └── banner.png              banner deste README
 ```
@@ -83,10 +84,11 @@ docs/img/
 <details>
 <summary><b>Como adicionar uma nova obra</b></summary>
 
-1. Crie o componente em `components/` (use `AsciiStarryNight.tsx` ou `AsciiHeart.tsx` como base).
-2. Crie a página em `app/<nome>/page.tsx`, com `metadata` própria (título, descrição, `canonical` e `openGraph.url`) e o link "← Galeria".
-3. Adicione a obra à lista `WORKS` em `app/page.tsx` para ela aparecer na galeria.
-4. Inclua a nova URL em `app/sitemap.ts`.
+1. Baixe uma versão reduzida (de 1280 a 1920 px de largura) de uma obra em domínio público, por exemplo na [Wikimedia Commons](https://commons.wikimedia.org), e uma miniatura de 480 px.
+2. Salve as duas em `public/obras/<slug>.jpg` e `public/obras/<slug>-thumb.jpg`.
+3. Adicione a obra à lista `WORKS` em `lib/works.ts`.
+
+A página, a galeria, os metadados e o sitemap saem dessa lista.
 
 </details>
 
@@ -99,16 +101,16 @@ O projeto foi pensado para a [Vercel](https://vercel.com) e não precisa de conf
 
 ## 🧭 Próximos passos
 
-- [ ] Mais obras na galeria (girassóis, O Beijo, outras formas).
-- [ ] Miniatura da Noite Estrelada em ASCII (hoje o cartão usa a pintura original).
-- [ ] Gerar o sitemap a partir da lista de obras, em vez de manter as duas à mão.
+- [ ] Mais obras e formas na galeria.
+- [ ] Miniaturas da galeria em ASCII (hoje os cartões usam a pintura original).
 - [ ] Gerar um `favicon.ico` para leitores antigos (hoje só existe o SVG).
 - [ ] Testar o desempenho em celulares mais simples. A animação redesenha milhares de células por quadro.
 - [ ] Testes automatizados. Hoje não há nenhum.
 
 ## Créditos
 
-- *A Noite Estrelada* (Vincent van Gogh, 1889): reprodução do Google Art Project em domínio público, obtida na [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg).
+- Obras em domínio público, em versões reduzidas da [Wikimedia Commons](https://commons.wikimedia.org). O link de cada arquivo de origem está em `lib/works.ts`:
+  *A Noite Estrelada* e *Os Girassóis* (Van Gogh), *O Beijo* (Klimt), *A Grande Onda de Kanagawa* (Hokusai), *Moça com Brinco de Pérola* (Vermeer) e *O Grito* (Munch).
 - O código foi escrito com apoio do Claude Code.
 
 <br />

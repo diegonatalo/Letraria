@@ -2,9 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const IMAGE_URL = "/noite-estrelada.jpg";
-const SRC_W = 1920;
-const SRC_H = 1520;
+const MAX_ROWS = 130; // limita a grade em obras verticais
 
 const RAMP = ".,:;-=+*xo#%&@";
 const ZOOM_START = 16;
@@ -17,7 +15,16 @@ const FONT = 'Consolas, "Cascadia Mono", "Courier New", monospace';
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 
-export default function AsciiStarryNight() {
+type Props = {
+  /** Imagem de origem (caminho em /public). */
+  src: string;
+  title: string;
+  /** Linha de crédito exibida ao final, ex.: "Vincent van Gogh, 1889". */
+  credit: string;
+};
+
+export default function AsciiArtwork({ src, title, credit }: Props) {
+  const dimsRef = useRef({ w: 1, h: 1 });
   const boxRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pixelsRef = useRef<Uint8ClampedArray | null>(null);
@@ -35,6 +42,9 @@ export default function AsciiStarryNight() {
     const img = new Image();
     img.onload = () => {
       const c = document.createElement("canvas");
+      const SRC_W = img.naturalWidth;
+      const SRC_H = img.naturalHeight;
+      dimsRef.current = { w: SRC_W, h: SRC_H };
       c.width = SRC_W;
       c.height = SRC_H;
       const cx = c.getContext("2d", { willReadFrequently: true })!;
@@ -43,8 +53,8 @@ export default function AsciiStarryNight() {
       startRef.current = performance.now();
       setReady(true);
     };
-    img.src = IMAGE_URL;
-  }, []);
+    img.src = src;
+  }, [src]);
 
   useEffect(() => {
     if (!ready) return;
@@ -53,6 +63,7 @@ export default function AsciiStarryNight() {
     const ctx = canvas.getContext("2d")!;
     const pixels = pixelsRef.current!;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const { w: SRC_W, h: SRC_H } = dimsRef.current;
     const aspect = SRC_W / SRC_H;
 
     let cols = 0;
@@ -80,7 +91,8 @@ export default function AsciiStarryNight() {
       canvas.style.height = `${H}px`;
       const ratio = 0.6; // largura/altura do glifo monoespaçado
       totalCols = clamp(Math.floor(W / 6), 70, 230);
-      cols = totalCols - 2 * FRAME_X;
+      cols = Math.min(totalCols - 2 * FRAME_X, Math.floor((MAX_ROWS * aspect) / ratio));
+      totalCols = cols + 2 * FRAME_X;
       rows = Math.round((cols * ratio) / aspect);
       totalRows = rows + 2 * FRAME_Y;
       fontPx = Math.min(W / (totalCols * ratio), H / totalRows);
@@ -231,14 +243,14 @@ export default function AsciiStarryNight() {
   return (
     <div className="relative flex h-full w-full flex-col">
       <div ref={boxRef} className="relative min-h-0 flex-1" onClick={replay}>
-        <canvas ref={canvasRef} className="block" aria-label="A Noite Estrelada em arte ASCII animada" role="img" />
+        <canvas ref={canvasRef} className="block" aria-label={`${title} em arte ASCII animada`} role="img" />
         {!ready && <p className="absolute inset-0 grid place-items-center text-sm text-slate-400">carregando a pintura…</p>}
       </div>
       <footer
         className={`flex items-center justify-between gap-4 px-6 py-3 text-sm text-slate-300 transition-opacity duration-1000 ${done ? "opacity-100" : "opacity-0"}`}
       >
         <span>
-          <strong className="font-semibold text-amber-200">A Noite Estrelada</strong> · Vincent van Gogh, 1889
+          <strong className="font-semibold text-amber-200">{title}</strong> · {credit}
         </span>
         <button
           onClick={replay}

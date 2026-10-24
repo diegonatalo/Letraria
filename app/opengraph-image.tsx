@@ -7,7 +7,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
-  const painting = await readFile(path.join(process.cwd(), "public", "noite-estrelada.jpg"));
+  const painting = await readFile(path.join(process.cwd(), "public", "obras", "noite-estrelada.jpg"));
   const src = `data:image/jpeg;base64,${painting.toString("base64")}`;
 
   return new ImageResponse(
