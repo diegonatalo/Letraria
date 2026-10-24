@@ -28,7 +28,7 @@ Arte ASCII colorida e animada: pinturas que se revelam com zoom, formas que se d
 | **Galeria** | A página inicial reúne as obras em cartões com miniaturas em ASCII, que cintilam ao passar o mouse. Clique em um para abrir a animação em tela cheia. |
 | **Onze obras clássicas** | *A Noite Estrelada*, *Os Girassóis*, *O Beijo*, *A Grande Onda de Kanagawa*, *Moça com Brinco de Pérola*, *O Grito*, *Mona Lisa*, *O Nascimento de Vênus*, *Impressão, nascer do sol*, *A Criação de Adão* e *O Caminhante sobre o Mar de Névoa* viram texto colorido, com moldura dourada também em ASCII. O zoom começa no centro e se afasta até mostrar a obra inteira. |
 | **Sobre a obra** | Quando o zoom termina, o botão "Sobre a obra" abre um painel com três partes: o contexto em que a obra foi feita, a mensagem que ela passa e uma curiosidade. Fecha com o ✕, clicando fora ou com Esc. O painel traz também o link do arquivo de origem na Wikimedia Commons. |
-| **Coração de palavras** | Um contorno de coração se desenha de baixo para cima e depois se preenche com "TE AMO", "CARINHO", "ABRAÇO" e outras palavras, em tons de vermelho. |
+| **Coração de palavras** | Um contorno de coração se desenha de baixo para cima, com uma ponta de brilho, e depois se preenche a partir do centro com "TE AMO", "CARINHO", "ABRAÇO" e outras palavras. O miolo é bordô e a borda rosa-clara. Pronto, o coração pulsa e as letras se afastam um pouco do centro a cada batimento. |
 | **Navegação entre obras** | Na página de cada obra, as setas levam à anterior e à próxima. Há também botões para repetir o zoom e para tela cheia. |
 | **Repetir a animação** | Clique na tela ou no botão "Repetir" para rever o zoom ou o desenho do coração. |
 | **Movimento reduzido** | Se o seu sistema pede menos animação, as obras aparecem já prontas, sem zoom nem desenho progressivo. |
@@ -42,7 +42,7 @@ Arte ASCII colorida e animada: pinturas que se revelam com zoom, formas que se d
 | **Identidade visual** | Três cores: dourado (moldura e destaques), azul-noite (fundo) e rubi (coração), definidas em `app/globals.css`. Títulos em Fraunces e rótulos em JetBrains Mono, via `next/font`. |
 | **Introdução** | Ao abrir uma obra, a moldura se desenha em diagonal, a pintura surge de dentro dela e só então o zoom começa. |
 | **Moldura** | Quatro anéis de caracteres dourados (`#@`, `~o`, `=-`, `'.`), mais claros no canto superior esquerdo e mais escuros no inferior direito. |
-| **Coração** | A forma vem da equação clássica do coração. As células de borda formam o contorno e o interior recebe as palavras, embaralhadas e deslocadas linha a linha. |
+| **Coração** | A forma vem da equação clássica do coração. As células de borda formam o contorno e o interior recebe as palavras, embaralhadas e deslocadas linha a linha. O preenchimento e o pulso seguem a distância ao centro, medida em relação à borda em cada direção, e por isso chegam juntos a todas as bordas. |
 
 A pintura é desenhada na GPU com WebGL2 puro (`lib/glArt.ts`), o que mantém o zoom fluido; a moldura dourada e as miniaturas usam `<canvas>` 2D. Se o navegador não tiver WebGL2, o desenho cai para o canvas 2D, mais pesado. Não há biblioteca de gráficos.
 
@@ -71,7 +71,7 @@ app/
 ├── [slug]/                 uma página por obra (/noite-estrelada, /o-beijo, ...)
 ├── coracao/                página do coração de palavras
 ├── layout.tsx              metadados, Open Graph e Twitter
-├── opengraph-image.tsx     imagem de compartilhamento (1200×630)
+├── opengraph-image.jpg     imagem de compartilhamento (1200×630, abaixo de 300 KB para o WhatsApp)
 ├── icon.svg                favicon
 ├── robots.ts               /robots.txt
 └── sitemap.ts              /sitemap.xml
