@@ -9,12 +9,12 @@ const MAX_ROWS = 130; // limita a grade em obras verticais
 
 const ZOOM_START = 16;
 const INTRO = 1.8; // segundos: a moldura se desenha e a pintura surge
-const DELAY = 0.6; // segundos parado no zoom máximo, depois da introdução
-const DURATION = 11; // segundos até a obra completa
+const DELAY = 0.4; // segundos parado no zoom máximo, depois da introdução
+const DURATION = 7; // segundos até a obra completa
 const FRAME_X = 5; // espessura da moldura em células (as células são ~0,6x mais estreitas que altas)
 const FRAME_Y = 3;
 
-const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const easeInOut = (t: number) => 0.5 - Math.cos(Math.PI * t) / 2; // senoidal: mais suave nas pontas e sem arrastar no começo
 
 type Neighbor = { href: string; title: string };
 
