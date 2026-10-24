@@ -26,7 +26,7 @@ Arte ASCII colorida e animada: pinturas que se revelam com zoom, formas que se d
 | Recurso | Descrição |
 |---|---|
 | **Galeria** | A página inicial reúne as obras em cartões com miniaturas em ASCII, que cintilam ao passar o mouse. Clique em um para abrir a animação em tela cheia. |
-| **Seis obras clássicas** | *A Noite Estrelada*, *Os Girassóis*, *O Beijo*, *A Grande Onda de Kanagawa*, *Moça com Brinco de Pérola* e *O Grito* viram texto colorido, com moldura dourada também em ASCII. O zoom começa no centro e se afasta até mostrar a obra inteira. |
+| **Onze obras clássicas** | *A Noite Estrelada*, *Os Girassóis*, *O Beijo*, *A Grande Onda de Kanagawa*, *Moça com Brinco de Pérola*, *O Grito*, *Mona Lisa*, *O Nascimento de Vênus*, *Impressão, nascer do sol*, *A Criação de Adão* e *O Caminhante sobre o Mar de Névoa* viram texto colorido, com moldura dourada também em ASCII. O zoom começa no centro e se afasta até mostrar a obra inteira. |
 | **Sobre a obra** | Quando o zoom termina, o botão "Sobre a obra" abre um painel com três partes: o contexto em que a obra foi feita, a mensagem que ela passa e uma curiosidade. Fecha com o ✕, clicando fora ou com Esc. O painel traz também o link do arquivo de origem na Wikimedia Commons. |
 | **Coração de palavras** | Um contorno de coração se desenha de baixo para cima e depois se preenche com "TE AMO", "CARINHO", "ABRAÇO" e outras palavras, em tons de vermelho. |
 | **Navegação entre obras** | Na página de cada obra, as setas levam à anterior e à próxima. Há também botões para repetir o zoom e para tela cheia. |
@@ -119,7 +119,7 @@ O projeto foi pensado para a [Vercel](https://vercel.com) e não precisa de conf
 ## Créditos
 
 - Obras em domínio público, em versões reduzidas da [Wikimedia Commons](https://commons.wikimedia.org). O link de cada arquivo de origem está em `lib/works.ts`:
-  *A Noite Estrelada* e *Os Girassóis* (Van Gogh), *O Beijo* (Klimt), *A Grande Onda de Kanagawa* (Hokusai), *Moça com Brinco de Pérola* (Vermeer) e *O Grito* (Munch).
+  *A Noite Estrelada* e *Os Girassóis* (Van Gogh), *O Beijo* (Klimt), *A Grande Onda de Kanagawa* (Hokusai), *Moça com Brinco de Pérola* (Vermeer), *O Grito* (Munch), *Mona Lisa* (Leonardo da Vinci), *O Nascimento de Vênus* (Botticelli), *Impressão, nascer do sol* (Monet), *A Criação de Adão* (Michelangelo) e *O Caminhante sobre o Mar de Névoa* (Friedrich).
 - O código foi escrito com apoio do Claude Code.
 
 <br />
