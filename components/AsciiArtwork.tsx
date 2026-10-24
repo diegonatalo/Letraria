@@ -49,6 +49,10 @@ export default function AsciiArtwork({ src, thumb, nav, title, credit, about, so
   const [done, setDone] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const [canFullscreen, setCanFullscreen] = useState(false);
+
+  // iPhone/Safari não oferece tela cheia em páginas: nesse caso o botão nem aparece.
+  useEffect(() => setCanFullscreen(!!document.fullscreenEnabled), []);
 
   useEffect(() => {
     if (!aboutOpen) return;
@@ -65,8 +69,8 @@ export default function AsciiArtwork({ src, thumb, nav, title, credit, about, so
   }, []);
 
   const toggleFullscreen = useCallback(() => {
-    if (document.fullscreenElement) document.exitFullscreen();
-    else document.documentElement.requestFullscreen?.();
+    const op = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+    op.catch(() => {}); // o navegador pode recusar (ex.: janelas embutidas)
   }, []);
 
   // Carrega a pintura e lê seus pixels uma vez.
@@ -326,11 +330,13 @@ export default function AsciiArtwork({ src, thumb, nav, title, credit, about, so
               <path d="M3 4v5h5" />
             </svg>
           </button>
-          <button onClick={toggleFullscreen} aria-label="Tela cheia" title="Tela cheia" className={ROUND_BTN}>
-            <svg viewBox="0 0 24 24" className={ICON} aria-hidden>
-              <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
-            </svg>
-          </button>
+          {canFullscreen && (
+            <button onClick={toggleFullscreen} aria-label="Tela cheia" title="Tela cheia" className={ROUND_BTN}>
+              <svg viewBox="0 0 24 24" className={ICON} aria-hidden>
+                <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+              </svg>
+            </button>
+          )}
         </div>
       </footer>
 
