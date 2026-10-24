@@ -1,0 +1,9 @@
+import AsciiStarryNight from "@/components/AsciiStarryNight";
+
+export default function Home() {
+  return (
+    <main className="h-screen w-screen overflow-hidden">
+      <AsciiStarryNight />
+    </main>
+  );
+}
