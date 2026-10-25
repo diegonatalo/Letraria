@@ -10,6 +10,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...WORKS.map((w) => ({ url: `${BASE}/${w.slug}`, lastModified: now, changeFrequency: "yearly" as const, priority: 0.8 })),
     { url: `${BASE}/coracao`, lastModified: now, changeFrequency: "yearly", priority: 0.8 },
     { url: `${BASE}/lirios`, lastModified: now, changeFrequency: "yearly", priority: 0.8 },
-    { url: `${BASE}/hortensias`, lastModified: now, changeFrequency: "yearly", priority: 0.8 },
+    { url: `${BASE}/buque`, lastModified: now, changeFrequency: "yearly", priority: 0.8 },
   ];
 }

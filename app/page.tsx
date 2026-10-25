@@ -187,7 +187,7 @@ export default function Galeria() {
             </Link>
           </li>
           <li>
-            <Link href="/hortensias" className={CARD}>
+            <Link href="/buque" className={CARD}>
               <div className="relative grid aspect-[4/3] place-items-center overflow-hidden bg-[#050505]">
                 <pre aria-hidden className="font-mono text-[clamp(6px,1.55vw,12px)] font-bold leading-[1.05]">
                   {bouquetPreview.map((row, j) => (
