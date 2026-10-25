@@ -21,6 +21,70 @@ const heartPreview = (() => {
   return lines.join("\n");
 })();
 
+// Miniatura em texto de um lírio: seis pétalas pontudas e o talo.
+const lilyPreview = (() => {
+  const chars = "o*#%@";
+  const lines: string[] = [];
+  for (let j = 0; j < 17; j++) {
+    let line = "";
+    for (let i = 0; i < 38; i++) {
+      const x = ((i + 0.5) / 38 - 0.5) * 2.4;
+      const y = ((8.5 - (j + 0.5)) / 8.5) * 1.0;
+      const yc = y - 0.3;
+      const r = Math.hypot(x * 0.5, yc);
+      const a = Math.atan2(yc, x * 0.5) + Math.PI / 6;
+      const petal = Math.pow(Math.abs(Math.cos(3 * a)), 1.6) * 0.62;
+      if (r < petal) line += chars[Math.min(4, Math.floor((1 - r / petal) * 5))];
+      else if (yc < -0.1 && Math.abs(x) < 0.07) line += "|";
+      else line += " ";
+    }
+    lines.push(line);
+  }
+  return lines.join("\n");
+})();
+
+// Miniatura colorida do buquê: manchas elípticas de letras, da base para a frente.
+const bouquetPreview = (() => {
+  const W = 38;
+  const H = 17;
+  // [coluna, linha, raio x, raio y, cor, caracteres do mais claro ao mais denso]
+  const blobs: [number, number, number, number, string, string][] = [
+    [9, 6.5, 5.5, 3.3, "text-blue-500", "+x*o#"],
+    [29, 6.5, 5.5, 3.3, "text-sky-400", "+x*o#"],
+    [4, 10.5, 3.6, 2.4, "text-blue-700", "+x*o#"],
+    [34, 10.5, 3.6, 2.4, "text-indigo-400", "+x*o#"],
+    [19, 3.2, 6.6, 3.2, "text-yellow-400", "*o#%@"],
+    [19, 3.4, 2.4, 1.2, "text-amber-900", "#@@@@"],
+    [13, 9.5, 3.4, 2.1, "text-slate-100", ".*+o@"],
+    [25.5, 9.2, 2.2, 2.5, "text-purple-500", "o#%@@"],
+    [19, 8.8, 4.2, 2.7, "text-red-600", "o#%@@"],
+  ];
+  const rows: { text: string; cls: string }[][] = [];
+  for (let j = 0; j < H; j++) {
+    const row: { text: string; cls: string }[] = [];
+    for (let i = 0; i < W; i++) {
+      let ch = " ";
+      let cls = "";
+      if (j >= 10 && Math.abs(i - 19) < (16 - j) * 1.5 + 1) {
+        ch = ";:=+"[(i + j) % 4];
+        cls = "text-green-600";
+      }
+      for (const [cx, cy, rx, ry, c, chars] of blobs) {
+        const r = Math.hypot((i - cx) / rx, (j - cy) / ry);
+        if (r < 1) {
+          ch = chars[Math.min(chars.length - 1, Math.floor((1 - r) * chars.length * 1.2 + ((i * 7 + j * 3) % 2)))];
+          cls = c;
+        }
+      }
+      const last = row[row.length - 1];
+      if (last && last.cls === cls) last.text += ch;
+      else row.push({ text: ch, cls });
+    }
+    rows.push(row);
+  }
+  return rows;
+})();
+
 const CARD =
   "group relative flex h-full flex-col overflow-hidden rounded-xl border border-gold/15 bg-night-2/80 transition duration-300 hover:-translate-y-1 hover:border-gold/60 hover:shadow-[0_8px_40px_-12px_rgba(245,199,106,0.35)]";
 
@@ -96,6 +160,56 @@ export default function Galeria() {
                 <p className="font-mono text-xs text-slate-400">palavras de carinho</p>
                 <p className="mt-2 text-sm text-slate-400">
                   Um contorno que se preenche de baixo para cima com palavras de carinho.
+                </p>
+              </div>
+            </Link>
+          </li>
+          <li>
+            <Link href="/lirios" className={CARD}>
+              <div className="relative grid aspect-[4/3] place-items-center overflow-hidden bg-[#050505]">
+                <pre
+                  aria-hidden
+                  className="font-mono text-[clamp(6px,1.55vw,12px)] font-bold leading-[1.05] text-pink-500 transition group-hover:text-amber-300"
+                >
+                  {lilyPreview}
+                </pre>
+                <Corners tone="text-pink-400/70" />
+              </div>
+              <div className="p-4">
+                <h2 className="font-display text-lg font-semibold text-slate-100 transition group-hover:text-gold">
+                  Lírios
+                </h2>
+                <p className="font-mono text-xs text-slate-400">um buquê de letras</p>
+                <p className="mt-2 text-sm text-slate-400">
+                  Talos que crescem, flores que se abrem e letras que se afastam do mouse.
+                </p>
+              </div>
+            </Link>
+          </li>
+          <li>
+            <Link href="/hortensias" className={CARD}>
+              <div className="relative grid aspect-[4/3] place-items-center overflow-hidden bg-[#050505]">
+                <pre aria-hidden className="font-mono text-[clamp(6px,1.55vw,12px)] font-bold leading-[1.05]">
+                  {bouquetPreview.map((row, j) => (
+                    <span key={j}>
+                      {row.map((seg, k) => (
+                        <span key={k} className={seg.cls}>
+                          {seg.text}
+                        </span>
+                      ))}
+                      {"\n"}
+                    </span>
+                  ))}
+                </pre>
+                <Corners tone="text-blue-300/70" />
+              </div>
+              <div className="p-4">
+                <h2 className="font-display text-lg font-semibold text-slate-100 transition group-hover:text-gold">
+                  Buquê de flores
+                </h2>
+                <p className="font-mono text-xs text-slate-400">hortênsia, girassol, rosa, tulipa, lírio e margaridas</p>
+                <p className="mt-2 text-sm text-slate-400">
+                  Um buquê misto, com margaridas coloridas entre as flores grandes, que cresce e desabrocha flor por flor, desenhado só com letras.
                 </p>
               </div>
             </Link>
