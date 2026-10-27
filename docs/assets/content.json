@@ -1,0 +1,117 @@
+{
+  "repo": "Letraria",
+  "name": "Letraria",
+  "tagline": "Obras e formas desenhadas com letras.",
+  "demo_url": "https://letraria.vercel.app",
+  "code_url": "https://github.com/diegonatalo/Letraria",
+  "sobre_md": "**Obras e formas desenhadas com letras.**<br />\nArte ASCII colorida e animada: pinturas que se revelam com zoom, formas que se desenham e se preenchem com palavras de carinho.",
+  "badges_md": "![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=flat-square&logo=nextdotjs&logoColor=white)\n![React](https://img.shields.io/badge/React_19-20232a?style=flat-square&logo=react&logoColor=61dafb)\n![TypeScript](https://img.shields.io/badge/TypeScript-3178c6?style=flat-square&logo=typescript&logoColor=white)\n![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white)\n![Canvas](https://img.shields.io/badge/arte_em_canvas-sem_bibliotecas-fcd34d?style=flat-square)",
+  "features": {
+    "title": "O que dá para fazer",
+    "items": [
+      {
+        "title": "Galeria",
+        "desc": "A página inicial reúne as obras em cartões com miniaturas em ASCII, que cintilam ao passar o mouse. Clique em um para abrir a animação em tela cheia."
+      },
+      {
+        "title": "Onze obras clássicas",
+        "desc": "*A Noite Estrelada*, *Os Girassóis*, *O Beijo*, *A Grande Onda de Kanagawa*, *Moça com Brinco de Pérola*, *O Grito*, *Mona Lisa*, *O Nascimento de Vênus*, *Impressão, nascer do sol*, *A Criação de Adão* e *O Caminhante sobre o Mar de Névoa* viram texto colorido, com moldura dourada também em ASCII. O zoom começa no centro e se afasta até mostrar a obra inteira."
+      },
+      {
+        "title": "Sobre a obra",
+        "desc": "Quando o zoom termina, o botão \"Sobre a obra\" abre um painel com três partes: o contexto em que a obra foi feita, a mensagem que ela passa e uma curiosidade. Fecha com o ✕, clicando fora ou com Esc. O painel traz também o link do arquivo de origem na Wikimedia Commons."
+      },
+      {
+        "title": "Coração de palavras",
+        "desc": "Um contorno de coração se desenha de baixo para cima, com uma ponta de brilho, e depois se preenche a partir do centro com \"TE AMO\", \"CARINHO\", \"ABRAÇO\" e outras palavras. O miolo é bordô e a borda rosa-clara. Pronto, o coração pulsa e as letras se afastam um pouco do centro a cada batimento."
+      },
+      {
+        "title": "Buquê de lírios",
+        "desc": "Em `/lirios`, oito lírios (vermelho, rosa, dourado, creme e vinho) são gerados como nuvem de pontos 3D e desenhados em letras coloridas. Os talos crescem de baixo para cima, os botões se abrem um a um e depois o buquê balança. O mouse (ou o toque) afasta as letras num raio de 80 px e elas voltam com mola."
+      },
+      {
+        "title": "Buquê de flores",
+        "desc": "Em `/buque`, uma hortênsia azul, um girassol, uma rosa vermelha, uma tulipa roxa e um lírio branco, dispostos numa cúpula, com margaridas coloridas e pequenas de talos curtos agrupadas no meio do buquê, entre as flores grandes, e folhas largas e serrilhadas. Mesma animação dos lírios, mas sem o efeito do mouse; as flores se abrem uma a uma."
+      },
+      {
+        "title": "Navegação entre obras",
+        "desc": "Na página de cada obra, as setas levam à anterior e à próxima. Há também botões para repetir o zoom e para tela cheia."
+      },
+      {
+        "title": "Repetir a animação",
+        "desc": "Clique na tela ou no botão \"Repetir\" para rever o zoom ou o desenho do coração."
+      },
+      {
+        "title": "Movimento reduzido",
+        "desc": "Se o seu sistema pede menos animação, as obras aparecem já prontas, sem zoom nem desenho progressivo."
+      }
+    ]
+  },
+  "stack": [
+    "Next.js 15",
+    "React 19",
+    "TypeScript",
+    "Tailwind CSS 4",
+    "arte em canvas · sem bibliotecas"
+  ],
+  "run": {
+    "title": "Rodando localmente",
+    "md": "Requer [Node.js](https://nodejs.org) 18.18 ou superior e npm.\n\n```bash\ngit clone https://github.com/diegonatalo/Letraria.git\ncd Letraria\nnpm install\nnpm run dev     # http://localhost:3000\n```\n\n| Comando | O que faz |\n|---|---|\n| `npm run dev` | Servidor de desenvolvimento |\n| `npm run build` | Gera o build de produção |\n| `npm start` | Serve o build de produção |"
+  },
+  "estrutura": {
+    "title": "Estrutura",
+    "md": "```text\napp/\n├── page.tsx                galeria (página inicial)\n├── [slug]/                 uma página por obra (/noite-estrelada, /o-beijo, ...)\n├── coracao/                página do coração de palavras\n├── layout.tsx              metadados, Open Graph e Twitter\n├── opengraph-image.jpg     imagem de compartilhamento (1200×630, abaixo de 300 KB para o WhatsApp)\n├── icon.svg                favicon\n├── robots.ts               /robots.txt\n└── sitemap.ts              /sitemap.xml\ncomponents/\n├── AsciiArtwork.tsx        renderizador de qualquer pintura, com zoom, moldura e painel \"Sobre a obra\"\n├── AsciiHeart.tsx          contorno e preenchimento do coração\n├── AsciiThumb.tsx          miniatura em ASCII dos cartões da galeria\n├── AsciiLogo.tsx           logotipo \"LETRARIA\" em caracteres\n├── AsciiRain.tsx           chuva de letras do fundo da galeria\n└── BackLink.tsx            botão \"← Galeria\"\nlib/\n├── ascii.ts                escala de caracteres e fonte compartilhadas\n├── glArt.ts                renderizador WebGL2 da pintura (shader + atlas de glifos)\n└── works.ts                lista das obras (título, artista, ano, fonte e textos do painel \"Sobre a obra\")\npublic/obras/               imagens reduzidas e miniaturas das obras\ndocs/img/\n└── banner.png              banner deste README\n```\n\n<details>\n<summary><b>Como adicionar uma nova obra</b></summary>\n\n1. Baixe uma versão reduzida (de 1280 a 1920 px de largura) de uma obra em domínio público, por exemplo na [Wikimedia Commons](https://commons.wikimedia.org), e uma miniatura de 480 px.\n2. Salve as duas em `public/obras/<slug>.jpg` e `public/obras/<slug>-thumb.jpg`.\n3. Adicione a obra à lista `WORKS` em `lib/works.ts`, com `about` contendo três textos, nesta ordem: contexto, mensagem e curiosidade. Confira os fatos em fontes confiáveis antes de escrever.\n\nA página, a galeria, o painel \"Sobre a obra\", os metadados e o sitemap saem dessa lista.\n\n</details>"
+  },
+  "mais": [
+    {
+      "title": "🧠 Como funciona",
+      "md": "| Conceito | Regra |\n|---|---|\n| **Pixels viram letras** | A pintura é lida célula a célula. O brilho de cada trecho escolhe o caractere (`.,:;-=+*xo#%&@`) e a cor dele vem do próprio trecho, com um fundo mais escuro da mesma cor. |\n| **Zoom** | O zoom parte de 16× e cai de forma suave até 1×, sempre centrado no meio da obra. |\n| **Identidade visual** | Três cores: dourado (moldura e destaques), azul-noite (fundo) e rubi (coração), definidas em `app/globals.css`. Títulos em Fraunces e rótulos em JetBrains Mono, via `next/font`. |\n| **Introdução** | Ao abrir uma obra, a moldura se desenha em diagonal, a pintura surge de dentro dela e só então o zoom começa. |\n| **Moldura** | Quatro anéis de caracteres dourados (`#@`, `~o`, `=-`, `'.`), mais claros no canto superior esquerdo e mais escuros no inferior direito. |\n| **Coração** | A forma vem da equação clássica do coração. As células de borda formam o contorno e o interior recebe as palavras, embaralhadas e deslocadas linha a linha. O preenchimento e o pulso seguem a distância ao centro, medida em relação à borda em cada direção, e por isso chegam juntos a todas as bordas. |\n\nA pintura é desenhada na GPU com WebGL2 puro (`lib/glArt.ts`), o que mantém o zoom fluido; a moldura dourada e as miniaturas usam `<canvas>` 2D. Se o navegador não tiver WebGL2, o desenho cai para o canvas 2D, mais pesado. Não há biblioteca de gráficos."
+    },
+    {
+      "title": "🌐 Deploy",
+      "md": "O projeto foi pensado para a [Vercel](https://vercel.com) e não precisa de configuração extra nem de variáveis de ambiente.\n\n> [!NOTE]\n> O domínio `https://letraria.vercel.app` está escrito em `app/layout.tsx` (`metadataBase`), em `app/sitemap.ts` e em `app/robots.ts`. Ao mudar de domínio, troque nos três lugares, senão o Open Graph, o sitemap e o canonical continuam apontando para o endereço antigo."
+    },
+    {
+      "title": "🧭 Próximos passos",
+      "md": "- [ ] Mais obras e formas na galeria.\n- [ ] Gerar um `favicon.ico` para leitores antigos (hoje só existe o SVG).\n- [ ] Testar o desempenho em celulares mais simples (o zoom agora roda na GPU, mas só foi medido em um computador).\n- [ ] Testes automatizados. Hoje não há nenhum."
+    },
+    {
+      "title": "Créditos",
+      "md": "- Obras em domínio público, em versões reduzidas da [Wikimedia Commons](https://commons.wikimedia.org). O link de cada arquivo de origem está em `lib/works.ts`:\n  *A Noite Estrelada* e *Os Girassóis* (Van Gogh), *O Beijo* (Klimt), *A Grande Onda de Kanagawa* (Hokusai), *Moça com Brinco de Pérola* (Vermeer), *O Grito* (Munch), *Mona Lisa* (Leonardo da Vinci), *O Nascimento de Vênus* (Botticelli), *Impressão, nascer do sol* (Monet), *A Criação de Adão* (Michelangelo) e *O Caminhante sobre o Mar de Névoa* (Friedrich).\n- O código foi escrito com apoio do Claude Code."
+    }
+  ],
+  "footer_line": "Feito com 💛 para quem gosta de ver arte sendo escrita.",
+  "shots": [
+    {
+      "file": "raw/galeria.png",
+      "name": "letraria.vercel.app",
+      "alt": "Galeria do Letraria: título LETRARIA em letras douradas e cartões com miniaturas em ASCII de A Noite Estrelada, Os Girassóis e O Beijo"
+    },
+    {
+      "file": "raw/noite-estrelada.png",
+      "name": "/noite-estrelada",
+      "alt": "A Noite Estrelada, de Van Gogh, desenhada com letras coloridas dentro de uma moldura dourada em ASCII"
+    },
+    {
+      "file": "raw/buque.png",
+      "name": "/buque",
+      "alt": "Buquê de flores em letras coloridas: hortênsia, girassol, rosa, tulipa, lírio e margaridas sobre fundo escuro"
+    }
+  ],
+  "author": [
+    {
+      "label": "Portfólio",
+      "url": "https://diegonatalo.dev"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/diegonatalo/"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/diegonatalo"
+    }
+  ],
+  "author_name": "Diego Natalo",
+  "year": 2026
+}

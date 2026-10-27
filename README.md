@@ -1,15 +1,13 @@
 <div align="center">
 
-<img src="docs/img/banner.png" alt="Letraria: título em dourado ao lado da pintura A Noite Estrelada" width="720" />
-
-# Letraria
-
-**Obras e formas desenhadas com letras.**<br />
-Arte ASCII colorida e animada: pinturas que se revelam com zoom, formas que se desenham e se preenchem com palavras de carinho.
+<img src="docs/assets/banner.svg" alt="Letraria: Obras e formas desenhadas com letras. github.com/diegonatalo/Letraria. Stack: Next.js 15, React 19, TypeScript, Tailwind CSS 4" width="100%" />
 
 <br />
 
-[![Abrir o app](https://img.shields.io/badge/abrir_o_app-letraria.vercel.app-f59e0b?style=for-the-badge&logo=vercel&logoColor=white)](https://letraria.vercel.app)
+<a href="https://letraria.vercel.app"><img src="docs/assets/btn-demo.svg" alt="Abrir o app ↗" height="46" /></a>
+<a href="https://github.com/diegonatalo/Letraria"><img src="docs/assets/btn-code.svg" alt="Código ↗" height="46" /></a>
+
+<br />
 
 ![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=flat-square&logo=nextdotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React_19-20232a?style=flat-square&logo=react&logoColor=61dafb)
@@ -21,34 +19,84 @@ Arte ASCII colorida e animada: pinturas que se revelam com zoom, formas que se d
 
 <br />
 
-## ✨ O que dá para fazer
+<div align="center">
 
-| Recurso | Descrição |
-|---|---|
-| **Galeria** | A página inicial reúne as obras em cartões com miniaturas em ASCII, que cintilam ao passar o mouse. Clique em um para abrir a animação em tela cheia. |
-| **Onze obras clássicas** | *A Noite Estrelada*, *Os Girassóis*, *O Beijo*, *A Grande Onda de Kanagawa*, *Moça com Brinco de Pérola*, *O Grito*, *Mona Lisa*, *O Nascimento de Vênus*, *Impressão, nascer do sol*, *A Criação de Adão* e *O Caminhante sobre o Mar de Névoa* viram texto colorido, com moldura dourada também em ASCII. O zoom começa no centro e se afasta até mostrar a obra inteira. |
-| **Sobre a obra** | Quando o zoom termina, o botão "Sobre a obra" abre um painel com três partes: o contexto em que a obra foi feita, a mensagem que ela passa e uma curiosidade. Fecha com o ✕, clicando fora ou com Esc. O painel traz também o link do arquivo de origem na Wikimedia Commons. |
-| **Coração de palavras** | Um contorno de coração se desenha de baixo para cima, com uma ponta de brilho, e depois se preenche a partir do centro com "TE AMO", "CARINHO", "ABRAÇO" e outras palavras. O miolo é bordô e a borda rosa-clara. Pronto, o coração pulsa e as letras se afastam um pouco do centro a cada batimento. |
-| **Buquê de lírios** | Em `/lirios`, oito lírios (vermelho, rosa, dourado, creme e vinho) são gerados como nuvem de pontos 3D e desenhados em letras coloridas. Os talos crescem de baixo para cima, os botões se abrem um a um e depois o buquê balança. O mouse (ou o toque) afasta as letras num raio de 80 px e elas voltam com mola. |
-| **Buquê de flores** | Em `/buque`, uma hortênsia azul, um girassol, uma rosa vermelha, uma tulipa roxa e um lírio branco, dispostos numa cúpula, com margaridas coloridas e pequenas de talos curtos agrupadas no meio do buquê, entre as flores grandes, e folhas largas e serrilhadas. Mesma animação dos lírios, mas sem o efeito do mouse; as flores se abrem uma a uma. |
-| **Navegação entre obras** | Na página de cada obra, as setas levam à anterior e à próxima. Há também botões para repetir o zoom e para tela cheia. |
-| **Repetir a animação** | Clique na tela ou no botão "Repetir" para rever o zoom ou o desenho do coração. |
-| **Movimento reduzido** | Se o seu sistema pede menos animação, as obras aparecem já prontas, sem zoom nem desenho progressivo. |
+<img src="docs/assets/h-sobre.svg" alt="01 · SOBRE — Sobre o projeto" width="100%" />
 
-## 🧠 Como funciona
+</div>
 
-| Conceito | Regra |
-|---|---|
-| **Pixels viram letras** | A pintura é lida célula a célula. O brilho de cada trecho escolhe o caractere (`.,:;-=+*xo#%&@`) e a cor dele vem do próprio trecho, com um fundo mais escuro da mesma cor. |
-| **Zoom** | O zoom parte de 16× e cai de forma suave até 1×, sempre centrado no meio da obra. |
-| **Identidade visual** | Três cores: dourado (moldura e destaques), azul-noite (fundo) e rubi (coração), definidas em `app/globals.css`. Títulos em Fraunces e rótulos em JetBrains Mono, via `next/font`. |
-| **Introdução** | Ao abrir uma obra, a moldura se desenha em diagonal, a pintura surge de dentro dela e só então o zoom começa. |
-| **Moldura** | Quatro anéis de caracteres dourados (`#@`, `~o`, `=-`, `'.`), mais claros no canto superior esquerdo e mais escuros no inferior direito. |
-| **Coração** | A forma vem da equação clássica do coração. As células de borda formam o contorno e o interior recebe as palavras, embaralhadas e deslocadas linha a linha. O preenchimento e o pulso seguem a distância ao centro, medida em relação à borda em cada direção, e por isso chegam juntos a todas as bordas. |
+**Obras e formas desenhadas com letras.**<br />
+Arte ASCII colorida e animada: pinturas que se revelam com zoom, formas que se desenham e se preenchem com palavras de carinho.
 
-A pintura é desenhada na GPU com WebGL2 puro (`lib/glArt.ts`), o que mantém o zoom fluido; a moldura dourada e as miniaturas usam `<canvas>` 2D. Se o navegador não tiver WebGL2, o desenho cai para o canvas 2D, mais pesado. Não há biblioteca de gráficos.
+<br />
 
-## 🚀 Rodando localmente
+<div align="center">
+
+<img src="docs/assets/h-demo.svg" alt="02 · DEMO — Demonstração" width="100%" />
+
+</div>
+
+<div align="center">
+
+<img src="docs/assets/shot-01.svg" alt="Galeria do Letraria: título LETRARIA em letras douradas e cartões com miniaturas em ASCII de A Noite Estrelada, Os Girassóis e O Beijo" width="100%" />
+
+<br />
+
+<img src="docs/assets/shot-02.svg" alt="A Noite Estrelada, de Van Gogh, desenhada com letras coloridas dentro de uma moldura dourada em ASCII" width="100%" />
+
+<br />
+
+<img src="docs/assets/shot-03.svg" alt="Buquê de flores em letras coloridas: hortênsia, girassol, rosa, tulipa, lírio e margaridas sobre fundo escuro" width="100%" />
+
+</div>
+
+<br />
+
+<div align="center">
+
+<img src="docs/assets/h-func.svg" alt="03 · FUNCIONALIDADES — O que dá para fazer" width="100%" />
+
+</div>
+
+<div align="center">
+
+<img src="docs/assets/f-01.svg" alt="Galeria: A página inicial reúne as obras em cartões com miniaturas em ASCII, que cintilam ao passar o mouse. Clique em um para abrir a animação em tela cheia." width="49%" />
+<img src="docs/assets/f-02.svg" alt="Onze obras clássicas: A Noite Estrelada, Os Girassóis, O Beijo, A Grande Onda de Kanagawa, Moça com Brinco de Pérola, O Grito, Mona Lisa, O Nascimento de Vênus, Impressão, nascer do sol, A Criação de Adão e O Caminhante sobre o Mar de Névoa viram texto colorido, com moldura dourada também em ASCII. O zoom começa no centro e se afasta até mostrar a obra inteira." width="49%" />
+<br />
+<img src="docs/assets/f-03.svg" alt="Sobre a obra: Quando o zoom termina, o botão &quot;Sobre a obra&quot; abre um painel com três partes: o contexto em que a obra foi feita, a mensagem que ela passa e uma curiosidade. Fecha com o ✕, clicando fora ou com Esc. O painel traz também o link do arquivo de origem na Wikimedia Commons." width="49%" />
+<img src="docs/assets/f-04.svg" alt="Coração de palavras: Um contorno de coração se desenha de baixo para cima, com uma ponta de brilho, e depois se preenche a partir do centro com &quot;TE AMO&quot;, &quot;CARINHO&quot;, &quot;ABRAÇO&quot; e outras palavras. O miolo é bordô e a borda rosa-clara. Pronto, o coração pulsa e as letras se afastam um pouco do centro a cada batimento." width="49%" />
+<br />
+<img src="docs/assets/f-05.svg" alt="Buquê de lírios: Em /lirios, oito lírios (vermelho, rosa, dourado, creme e vinho) são gerados como nuvem de pontos 3D e desenhados em letras coloridas. Os talos crescem de baixo para cima, os botões se abrem um a um e depois o buquê balança. O mouse (ou o toque) afasta as letras num raio de 80 px e elas voltam com mola." width="49%" />
+<img src="docs/assets/f-06.svg" alt="Buquê de flores: Em /buque, uma hortênsia azul, um girassol, uma rosa vermelha, uma tulipa roxa e um lírio branco, dispostos numa cúpula, com margaridas coloridas e pequenas de talos curtos agrupadas no meio do buquê, entre as flores grandes, e folhas largas e serrilhadas. Mesma animação dos lírios, mas sem o efeito do mouse; as flores se abrem uma a uma." width="49%" />
+<br />
+<img src="docs/assets/f-07.svg" alt="Navegação entre obras: Na página de cada obra, as setas levam à anterior e à próxima. Há também botões para repetir o zoom e para tela cheia." width="49%" />
+<img src="docs/assets/f-08.svg" alt="Repetir a animação: Clique na tela ou no botão &quot;Repetir&quot; para rever o zoom ou o desenho do coração." width="49%" />
+<br />
+<img src="docs/assets/f-09.svg" alt="Movimento reduzido: Se o seu sistema pede menos animação, as obras aparecem já prontas, sem zoom nem desenho progressivo." width="49%" />
+
+</div>
+
+<br />
+
+<div align="center">
+
+<img src="docs/assets/h-stack.svg" alt="04 · STACK — Stack" width="100%" />
+
+</div>
+
+<div align="center">
+
+<img src="docs/assets/stack.svg" alt="Stack: Next.js 15, React 19, TypeScript, Tailwind CSS 4, arte em canvas · sem bibliotecas" width="100%" />
+
+</div>
+
+<br />
+
+<div align="center">
+
+<img src="docs/assets/h-run.svg" alt="05 · COMO RODAR — Rodando localmente" width="100%" />
+
+</div>
 
 Requer [Node.js](https://nodejs.org) 18.18 ou superior e npm.
 
@@ -65,7 +113,13 @@ npm run dev     # http://localhost:3000
 | `npm run build` | Gera o build de produção |
 | `npm start` | Serve o build de produção |
 
-## 🗂️ Estrutura
+<br />
+
+<div align="center">
+
+<img src="docs/assets/h-estrutura.svg" alt="06 · ESTRUTURA — Estrutura" width="100%" />
+
+</div>
 
 ```text
 app/
@@ -104,21 +158,42 @@ A página, a galeria, o painel "Sobre a obra", os metadados e o sitemap saem des
 
 </details>
 
-## 🌐 Deploy
+<br />
+
+<div align="center">
+
+<img src="docs/assets/h-mais.svg" alt="07 · MAIS — Mais informações" width="100%" />
+
+</div>
+
+### 🧠 Como funciona
+
+| Conceito | Regra |
+|---|---|
+| **Pixels viram letras** | A pintura é lida célula a célula. O brilho de cada trecho escolhe o caractere (`.,:;-=+*xo#%&@`) e a cor dele vem do próprio trecho, com um fundo mais escuro da mesma cor. |
+| **Zoom** | O zoom parte de 16× e cai de forma suave até 1×, sempre centrado no meio da obra. |
+| **Identidade visual** | Três cores: dourado (moldura e destaques), azul-noite (fundo) e rubi (coração), definidas em `app/globals.css`. Títulos em Fraunces e rótulos em JetBrains Mono, via `next/font`. |
+| **Introdução** | Ao abrir uma obra, a moldura se desenha em diagonal, a pintura surge de dentro dela e só então o zoom começa. |
+| **Moldura** | Quatro anéis de caracteres dourados (`#@`, `~o`, `=-`, `'.`), mais claros no canto superior esquerdo e mais escuros no inferior direito. |
+| **Coração** | A forma vem da equação clássica do coração. As células de borda formam o contorno e o interior recebe as palavras, embaralhadas e deslocadas linha a linha. O preenchimento e o pulso seguem a distância ao centro, medida em relação à borda em cada direção, e por isso chegam juntos a todas as bordas. |
+
+A pintura é desenhada na GPU com WebGL2 puro (`lib/glArt.ts`), o que mantém o zoom fluido; a moldura dourada e as miniaturas usam `<canvas>` 2D. Se o navegador não tiver WebGL2, o desenho cai para o canvas 2D, mais pesado. Não há biblioteca de gráficos.
+
+### 🌐 Deploy
 
 O projeto foi pensado para a [Vercel](https://vercel.com) e não precisa de configuração extra nem de variáveis de ambiente.
 
 > [!NOTE]
 > O domínio `https://letraria.vercel.app` está escrito em `app/layout.tsx` (`metadataBase`), em `app/sitemap.ts` e em `app/robots.ts`. Ao mudar de domínio, troque nos três lugares, senão o Open Graph, o sitemap e o canonical continuam apontando para o endereço antigo.
 
-## 🧭 Próximos passos
+### 🧭 Próximos passos
 
 - [ ] Mais obras e formas na galeria.
 - [ ] Gerar um `favicon.ico` para leitores antigos (hoje só existe o SVG).
 - [ ] Testar o desempenho em celulares mais simples (o zoom agora roda na GPU, mas só foi medido em um computador).
 - [ ] Testes automatizados. Hoje não há nenhum.
 
-## Créditos
+### Créditos
 
 - Obras em domínio público, em versões reduzidas da [Wikimedia Commons](https://commons.wikimedia.org). O link de cada arquivo de origem está em `lib/works.ts`:
   *A Noite Estrelada* e *Os Girassóis* (Van Gogh), *O Beijo* (Klimt), *A Grande Onda de Kanagawa* (Hokusai), *Moça com Brinco de Pérola* (Vermeer), *O Grito* (Munch), *Mona Lisa* (Leonardo da Vinci), *O Nascimento de Vênus* (Botticelli), *Impressão, nascer do sol* (Monet), *A Criação de Adão* (Michelangelo) e *O Caminhante sobre o Mar de Névoa* (Friedrich).
@@ -127,5 +202,23 @@ O projeto foi pensado para a [Vercel](https://vercel.com) e não precisa de conf
 <br />
 
 <div align="center">
-  <sub>Feito com 💛 para quem gosta de ver arte sendo escrita.</sub>
+
+<img src="docs/assets/h-autor.svg" alt="08 · AUTOR — Autor" width="100%" />
+
+</div>
+
+<div align="center">
+
+<a href="https://diegonatalo.dev"><img src="docs/assets/btn-author-1.svg" alt="Portfólio ↗" height="46" /></a>
+<a href="https://www.linkedin.com/in/diegonatalo/"><img src="docs/assets/btn-author-2.svg" alt="LinkedIn ↗" height="46" /></a>
+<a href="https://github.com/diegonatalo"><img src="docs/assets/btn-author-3.svg" alt="GitHub ↗" height="46" /></a>
+
+</div>
+
+<br />
+
+<div align="center">
+
+<img src="docs/assets/footer.svg" alt="© 2026 Diego Natalo. Feito com 💛 para quem gosta de ver arte sendo escrita." width="100%" />
+
 </div>
